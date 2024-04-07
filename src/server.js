@@ -19,14 +19,15 @@ app.set('views', __dirname + '/../views');
 app.get('/', async (req, res) => {
 
     const city = req.query.city;
-    if (city && city != "") {
-        const url = 'https://api.openweathermap.org/data/2.5/weather?q='+ city +'&appid=' + process.env.API_KEY;
-        const data = await request.get(url);
+    const url = 'https://api.openweathermap.org/data/2.5/weather?q='+ city +'&appid=' + process.env.API_KEY;
+    const data = await request.get(url);
 
+    if (city && city != "" && data.cod == 200) {
         res.render('showWeather',
             {
+                default_input_text: city,
                 city_name: data.name ,
-                temperature: data.main.temp ,
+                temperature: data.main.temp || 0 ,
                 weather_name: data.weather[0].main
             });
     } else {
